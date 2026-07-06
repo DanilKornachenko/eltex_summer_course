@@ -1,0 +1,1 @@
+ssh eltex-v22@217.71.138.1 -p 44556 --password 92x6ggxa4cmGN
