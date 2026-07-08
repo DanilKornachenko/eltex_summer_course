@@ -1,0 +1,50 @@
+1.
+screen -S "'whoami'_part2"
+2.
+ls
+lsb_release
+lsinitramfs
+lslocks
+lsmod
+lspci
+attr
+lscpu
+lsipc
+lslogins
+lsns
+lsusb
+blk
+lsfd
+lsirq
+lsmem
+lsof       
+3.
+$HISTCMD
+$HISTCONTROL
+$HISTFILE
+$HISTFILESIZE
+$HISTSIZE
+4.
+echo $HISTSIZE
+echo $HISTFILESIZE
+5.
+ls -a | grep '^\.'
+6.
+export HISTTIMEFORMAT="%F %T "
+7.
+PROMPT_COMMAND="history -a"
+10.
+DATE=$(date +%2u-%2m-%Y)
+echo $DATE
+11.
+TIME=$(date +%H:%M)
+echo $TIME
+12.
+DATE_TIME="$DATE $TIME"
+echo $DATE_TIME
+13.
+ls /bin /sbin | grep '[0-9]'
+14.
+export PS1="$USER@$HOSTNAME-$(date +%2H:%2M)>"
+16.
+mkdir "$(date +%Y)"_{01..12}

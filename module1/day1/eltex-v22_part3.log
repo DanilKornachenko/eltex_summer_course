@@ -1,0 +1,18 @@
+mkdir -p D1/D2/D3
+touch D1/D2/file.txt
+echo Произвольный текст >> D1/D2/file.txt
+ln D1/D2/file.txt D1/D2/D3/hard_link
+ln -s ~/D1/D2/file.txt D1/D2/D3/symlink
+file D1/D2/D3/hard_link
+file D1/D2/D3/symlink
+mv D1/D2/file.txt D1/
+cat D1/D2/D3/hard_link
+cat D1/D2/D3/symlink
+unlink D1/D2/D3/hard_link
+unlink D1/D2/D3/symlink
+rm -r D1/D2
+du / -ah --threshold=20000000 2>/dev/null > "$USER"_part3_gt20M.log
+find ~/ -type f -mtime -1
+find / -name find 2>/dev/null
+file /usr/bin/find
+file /boot/initrd.img*
