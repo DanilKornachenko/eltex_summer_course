@@ -1,0 +1,40 @@
+ssh-keygen
+ssh-copy-id -i ~/.ssh/id_rsa.pub root@172.16.9.196
+useradd -m -s /bin/bash user1
+passwd user1
+adduser user2
+adduser user3
+usermod -s /usr/sbin/nologin user3
+su user3
+su -s /bin/bash user3
+groupadd newgroup
+usermod -aG newgroup user2
+usermod -aG newgroup user3
+usermod -aG newgroup user1
+groups user1
+groups user2
+groups user3
+chown :newgroup /opt/share
+chmod 2770 /opt/share
+echo "umask 0027" >> /home/user1/.bashrc
+chmod +t /opt/share
+visudo
+passwd -x 10 user1
+passwd -x 10 user2
+passwd -x 10 user3
+vi /etc/motd
+rsync -a /etc/ /root/etc_backup
+tar -czf backup_gzip.tar.gz etc_backup
+tar -cjf backup_bzip.tar.bz2 etc_backup
+du -h backup_*
+echo "$(date)" > /etc/motd
+rsync -a --delete /etc/ /root/etc_backup/
+tar -czf backup_gzip.tar.gz etc_backup
+tar -tf backup_bzip.tar.bz2 | sort > /tmp/archive_list.txt
+find etc_backup -type f -printf '%P\n' | sort > /tmp/dir_list.txt
+diff /tmp/archive_list.txt /tmp/dir_list.txt
+mkdir -p etc_backup_gzip
+tar -xzf backup_gzip.tar.gz -C etc_backup_gzip
+mkdir -p etc_backup_bz
+tar -xjf backup_bzip.tar.bz2 -C etc_backup_bz/
+diff etc_backup_bz/etc_backup/motd etc_backup_gzip/etc_backup/motd
