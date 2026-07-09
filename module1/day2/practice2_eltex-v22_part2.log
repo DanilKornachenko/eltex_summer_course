@@ -1,0 +1,16 @@
+1.
+boot=$(($(date +%s) - $(cut -d. -f1 /proc/uptime)))
+journalctl -b --until "@$((boot + 20))"
+2.
+find / -name auth.log
+awk '{$1=""; $2=""; print $0}' /var/log/auth.log | sed 's/\[[0-9]*\]//' | sed 's/^.//' | sort -k1
+3.
+awk '{$1=""; $2=""; print $0}' /var/log/auth.log | sed 's/\[[0-9]*\]//' | sed 's/^.//' | sort -k1 | awk '{print $1}' | uniq -c | sort -nr
+4.
+grep "nologin" /etc/passwd | awk -F ":" '{print $3, $1}' | sort -k1 -nr
+5.
+dmesg | grep "kernel"
+6.
+grep -c ^ /var/log/kern.log
+7.
+awk -F '\n' '{RS="";print $2"\n",$3"\n",$1"\n",$4 "\n"}' /var/log/apt/history.log | sed 's/^ //'
