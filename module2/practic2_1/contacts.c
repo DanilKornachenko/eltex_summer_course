@@ -61,18 +61,14 @@ void addContact(booklist* Booklist, char* FIO, char* email, char* number) {
   head->right->right = NULL;
 }
 
-booklist* deleteByID(booklist* Booklist, int id)
-{
-  if (Booklist == NULL)
-    return Booklist;
+booklist* deleteByID(booklist* Booklist, int id) {
+  if (Booklist == NULL) return Booklist;
 
   booklist* head = Booklist;
   booklist* current = Booklist;
 
-  if (head->Phonebook.id == id)
-  {
-    if (head->right != NULL)
-    {
+  if (head->Phonebook.id == id) {
+    if (head->right != NULL) {
       booklist* temp = head->right;
       temp->left = NULL;
 
@@ -84,9 +80,7 @@ booklist* deleteByID(booklist* Booklist, int id)
 
       free(head);
       return temp;
-    }
-    else
-    {
+    } else {
       free(head->Phonebook.Data.email);
 
       free(head->Phonebook.Data.number);
@@ -99,30 +93,25 @@ booklist* deleteByID(booklist* Booklist, int id)
     }
   }
 
-  while (current)
-  {
-    if (current->Phonebook.id == id)
-    {
-        booklist* temp = current->left;
-        temp->right = current->right;
-        if (temp->right)
-          temp->right->left = temp;
+  while (current) {
+    if (current->Phonebook.id == id) {
+      booklist* temp = current->left;
+      temp->right = current->right;
+      if (temp->right) temp->right->left = temp;
 
-        current->left = NULL;
-        current->right = NULL;
+      current->left = NULL;
+      current->right = NULL;
 
-	      free(current->Phonebook.Data.email);
+      free(current->Phonebook.Data.email);
 
-	      free(current->Phonebook.Data.number);
+      free(current->Phonebook.Data.number);
 
-	      free(current->Phonebook.FIO);
+      free(current->Phonebook.FIO);
 
-        free(current);
+      free(current);
 
-        break;
-    }
-    else
-    {
+      break;
+    } else {
       current = current->right;
     }
   }
@@ -130,15 +119,11 @@ booklist* deleteByID(booklist* Booklist, int id)
   return head;
 }
 
-
-booklist* findContact(booklist* Booklist, int id)
-{
+booklist* findContact(booklist* Booklist, int id) {
   booklist* head = Booklist;
 
-  while (head)
-  {
-    if (head->Phonebook.id == id)
-      return head;
+  while (head) {
+    if (head->Phonebook.id == id) return head;
 
     head = head->right;
   }
@@ -146,14 +131,11 @@ booklist* findContact(booklist* Booklist, int id)
   return NULL;
 }
 
-void freeContacts(booklist* Booklist)
-{
-  if (Booklist == NULL)
-    return;
+void freeContacts(booklist* Booklist) {
+  if (Booklist == NULL) return;
 
   booklist* head = Booklist;
-  while (head)
-  {
+  while (head) {
     booklist* next = head->right;
 
     free(head->Phonebook.FIO);

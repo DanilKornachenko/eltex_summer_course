@@ -36,7 +36,6 @@ void printContacts(booklist* Booklist) {
   }
 
   printf("==================================================\n");
-
 }
 
 int main(void) {
@@ -107,8 +106,7 @@ int main(void) {
       free(email);
       free(number);
     }
-    if (choice == 2)
-    {
+    if (choice == 2) {
       int id = 0;
 
       printf("==================================================\n");
@@ -120,8 +118,7 @@ int main(void) {
 
       Booklist = deleteByID(Booklist, id);
     }
-    if (choice == 3)
-    {
+    if (choice == 3) {
       int id = 0;
 
       char answer;
@@ -135,61 +132,58 @@ int main(void) {
 
       booklist* changedContact = findContact(Booklist, id);
 
-      if (changedContact)
-      {
-	      printf("Поменять ФИО? (y/n) : ");
-	      scanf(" %c", &answer);
+      if (changedContact) {
+        printf("Поменять ФИО? (y/n) : ");
+        scanf(" %c", &answer);
 
-	      if (answer == 'y') {
-	        printf("Введите новое имя: ");
-	        FIO = (char*)calloc(255, sizeof(char));
-	        scanf("%s", FIO);
+        if (answer == 'y') {
+          printf("Введите новое имя: ");
+          FIO = (char*)calloc(255, sizeof(char));
+          scanf("%s", FIO);
           free(changedContact->Phonebook.FIO);
-          changedContact->Phonebook.FIO = (char*)malloc(sizeof(char) * strlen(FIO) + 1);
+          changedContact->Phonebook.FIO =
+              (char*)malloc(sizeof(char) * strlen(FIO) + 1);
           strcpy(changedContact->Phonebook.FIO, FIO);
-	      }
+        }
 
-	      printf("Поменять email? (y/n) : ");
-	      scanf(" %c", &answer);
+        printf("Поменять email? (y/n) : ");
+        scanf(" %c", &answer);
 
-	      if (answer == 'y') {
-	        printf("Введите новый email: ");
-	        email = (char*)calloc(255, sizeof(char));
-	        scanf("%s", email);
+        if (answer == 'y') {
+          printf("Введите новый email: ");
+          email = (char*)calloc(255, sizeof(char));
+          scanf("%s", email);
 
           free(changedContact->Phonebook.Data.email);
 
-          changedContact->Phonebook.Data.email = (char*)malloc(sizeof(char) * strlen(email) + 1);
+          changedContact->Phonebook.Data.email =
+              (char*)malloc(sizeof(char) * strlen(email) + 1);
           strcpy(changedContact->Phonebook.Data.email, email);
-	      }
+        }
 
-	      printf("Поменять number? (y/n) : ");
-	      scanf(" %c", &answer);
+        printf("Поменять number? (y/n) : ");
+        scanf(" %c", &answer);
 
-	      if (answer == 'y') {
-	        printf("Введите новый number: ");
-	        number = (char*)calloc(255, sizeof(char));
-	        scanf("%s", number);
+        if (answer == 'y') {
+          printf("Введите новый number: ");
+          number = (char*)calloc(255, sizeof(char));
+          scanf("%s", number);
 
           free(changedContact->Phonebook.Data.number);
 
-          if (strlen(number) == 11)
-          {
-            changedContact->Phonebook.Data.number = (char*)malloc(sizeof(char) * strlen(number) + 1);
+          if (strlen(number) == 11) {
+            changedContact->Phonebook.Data.number =
+                (char*)malloc(sizeof(char) * strlen(number) + 1);
             strcpy(changedContact->Phonebook.Data.number, number);
           }
-	      }
-      }
-      else
-      {
+        }
+      } else {
         printf("Контакт не найден :(\n");
       }
 
       printf("==================================================\n");
-
     }
-    if (choice == 0)
-      break;
+    if (choice == 0) break;
   }
 
   freeContacts(Booklist);

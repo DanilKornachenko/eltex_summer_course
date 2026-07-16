@@ -1,25 +1,25 @@
 #include <check.h>
 #include <stdlib.h>
-#include "contacts.h"
 #include <string.h>
+
+#include "contacts.h"
 
 static char* FIO;
 static char* email;
 static char* number;
 static char* error_number;
 
-START_TEST(delete_from_head)
-{
+START_TEST(delete_from_head) {
   booklist* book = NULL;
   book = firstContact(FIO, email, number);
 
   book = deleteByID(book, 1);
 
   ck_assert_ptr_eq(book, NULL);
-} END_TEST
+}
+END_TEST
 
-START_TEST(delete_from_tail)
-{
+START_TEST(delete_from_tail) {
   booklist* book = NULL;
   book = firstContact(FIO, email, number);
   addContact(book, FIO, NULL, error_number);
@@ -29,10 +29,10 @@ START_TEST(delete_from_tail)
   ck_assert_ptr_eq(book->right, NULL);
 
   freeContacts(book);
-} END_TEST
+}
+END_TEST
 
-START_TEST(delete_from_middle)
-{
+START_TEST(delete_from_middle) {
   booklist* book = NULL;
   book = firstContact(FIO, email, number);
   addContact(book, FIO, NULL, error_number);
@@ -43,10 +43,10 @@ START_TEST(delete_from_middle)
   ck_assert_int_eq(book->right->Phonebook.id, 3);
 
   freeContacts(book);
-} END_TEST
+}
+END_TEST
 
-Suite* contacts_suite(void)
-{
+Suite* contacts_suite(void) {
   Suite* s;
   TCase* tc_delete_from_head;
   TCase* tc_delete_from_tail;
@@ -69,11 +69,10 @@ Suite* contacts_suite(void)
   return s;
 }
 
-int main(void)
-{
+int main(void) {
   int fails;
-  Suite *s;
-  SRunner *sr;
+  Suite* s;
+  SRunner* sr;
 
   FIO = (char*)malloc(sizeof(char) * 255);
   strcpy(FIO, "KornachenkoDA");
