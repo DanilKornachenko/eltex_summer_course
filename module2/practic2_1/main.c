@@ -103,12 +103,9 @@ int main(void) {
       else
         Booklist = firstContact(FIO, email, number);
 
-      if (FIO)
-        free(FIO);
-      if (email)
-        free(email);
-      if (number)
-        free(number);
+      free(FIO);
+      free(email);
+      free(number);
     }
     if (choice == 2)
     {
@@ -148,7 +145,7 @@ int main(void) {
 	        FIO = (char*)calloc(255, sizeof(char));
 	        scanf("%s", FIO);
           free(changedContact->Phonebook.FIO);
-          changedContact->Phonebook.FIO = (char*)malloc(sizeof(char) * strlen(FIO));
+          changedContact->Phonebook.FIO = (char*)malloc(sizeof(char) * strlen(FIO) + 1);
           strcpy(changedContact->Phonebook.FIO, FIO);
 	      }
 
@@ -160,12 +157,9 @@ int main(void) {
 	        email = (char*)calloc(255, sizeof(char));
 	        scanf("%s", email);
 
-          if (changedContact->Phonebook.Data.email)
-          {
-            free(changedContact->Phonebook.Data.email);
-          }
+          free(changedContact->Phonebook.Data.email);
 
-          changedContact->Phonebook.Data.email = (char*)malloc(sizeof(char) * strlen(email));
+          changedContact->Phonebook.Data.email = (char*)malloc(sizeof(char) * strlen(email) + 1);
           strcpy(changedContact->Phonebook.Data.email, email);
 	      }
 
@@ -177,14 +171,11 @@ int main(void) {
 	        number = (char*)calloc(255, sizeof(char));
 	        scanf("%s", number);
 
-          if (changedContact->Phonebook.Data.number)
-          {
-            free(changedContact->Phonebook.Data.number);
-          }
+          free(changedContact->Phonebook.Data.number);
 
           if (strlen(number) == 11)
           {
-            changedContact->Phonebook.Data.number = (char*)malloc(sizeof(char) * strlen(number));
+            changedContact->Phonebook.Data.number = (char*)malloc(sizeof(char) * strlen(number) + 1);
             strcpy(changedContact->Phonebook.Data.number, number);
           }
 	      }
@@ -200,6 +191,8 @@ int main(void) {
     if (choice == 0)
       break;
   }
+
+  freeContacts(Booklist);
 
   return 0;
 }

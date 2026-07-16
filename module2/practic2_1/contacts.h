@@ -26,4 +26,6 @@ booklist* deleteByID(booklist* Booklist, int id);
 
 booklist* findContact(booklist* Booklist, int id);
 
+void freeContacts(booklist* Booklist);
+
 #endif

@@ -6,19 +6,19 @@
 static phonebook createUser(int id, char* FIO, char* email, char* number) {
   phonebook user = {0};
   user.id = id;
-  user.FIO = (char*)malloc(sizeof(char) * strlen(FIO));
+  user.FIO = (char*)malloc(sizeof(char) * strlen(FIO) + 1);
   strcpy(user.FIO, FIO);
   data Data = {0};
   if (email) {
     if (email[0] != '\0') {
-      Data.email = (char*)malloc(sizeof(char) * strlen(email));
+      Data.email = (char*)malloc(sizeof(char) * strlen(email) + 1);
       strcpy(Data.email, email);
     }
   }
 
   if (number) {
     if (strlen(number) == 11) {
-      Data.number = (char*)malloc(sizeof(char) * 11);
+      Data.number = (char*)malloc(sizeof(char) * 12);
       strcpy(Data.number, number);
     }
   }
@@ -75,11 +75,24 @@ booklist* deleteByID(booklist* Booklist, int id)
     {
       booklist* temp = head->right;
       temp->left = NULL;
+
+      free(head->Phonebook.Data.email);
+
+      free(head->Phonebook.Data.number);
+
+      free(head->Phonebook.FIO);
+
       free(head);
       return temp;
     }
     else
     {
+      free(head->Phonebook.Data.email);
+
+      free(head->Phonebook.Data.number);
+
+      free(head->Phonebook.FIO);
+
       free(head);
       head = NULL;
       return head;
@@ -97,6 +110,12 @@ booklist* deleteByID(booklist* Booklist, int id)
 
         current->left = NULL;
         current->right = NULL;
+
+	      free(current->Phonebook.Data.email);
+
+	      free(current->Phonebook.Data.number);
+
+	      free(current->Phonebook.FIO);
 
         free(current);
 
@@ -125,4 +144,24 @@ booklist* findContact(booklist* Booklist, int id)
   }
 
   return NULL;
+}
+
+void freeContacts(booklist* Booklist)
+{
+  if (Booklist == NULL)
+    return;
+
+  booklist* head = Booklist;
+  while (head)
+  {
+    booklist* next = head->right;
+
+    free(head->Phonebook.FIO);
+    free(head->Phonebook.Data.email);
+    free(head->Phonebook.Data.number);
+
+    free(head);
+
+    head = next;
+  }
 }
