@@ -1,0 +1,3 @@
+stat -c %a - number access
+stat -c %A - humanreadable
+stat -c %f - hex
