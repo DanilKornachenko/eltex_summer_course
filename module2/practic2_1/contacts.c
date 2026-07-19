@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+int maxID = 0;
+
 static phonebook createUser(int id, char* FIO, char* email, char* number) {
   phonebook user = {0};
   user.id = id;
@@ -30,6 +32,11 @@ static phonebook createUser(int id, char* FIO, char* email, char* number) {
   return user;
 }
 
+static int cmpName(char* main, char* other)
+{
+  return strcmp(main, other);
+}
+
 booklist* firstContact(char* FIO, char* email, char* number) {
   phonebook user = createUser(1, FIO, email, number);
 
@@ -38,27 +45,85 @@ booklist* firstContact(char* FIO, char* email, char* number) {
   Booklist->right = NULL;
 
   Booklist->Phonebook = user;
+  maxID = 1;
 
   return Booklist;
 }
 
-void addContact(booklist* Booklist, char* FIO, char* email, char* number) {
-  booklist* head = Booklist;
-  int id = head->Phonebook.id;
-  while (head->right) {
-    head = head->right;
+booklist* addContact(booklist* Booklist, char* FIO, char* email, char* number) {
+  int id = maxID + 1;
+  maxID = id;
+
+  booklist* tmp = (booklist*)malloc(sizeof(booklist));
+  tmp->left = NULL;
+  tmp->right = NULL;
+  tmp->Phonebook = createUser(id, FIO, email, number);
+
+  if (Booklist == NULL)
+  {
+    return tmp;
   }
 
-  id = head->Phonebook.id;
+  booklist* head = Booklist;
 
-  phonebook user = createUser(id + 1, FIO, email, number);
+  move step = stay;
 
-  head->right = (booklist*)malloc(sizeof(booklist));
+  while (1) {
+    int c = cmpName(FIO, head->Phonebook.FIO);
 
-  head->right->Phonebook = user;
+    if (c < 0)
+    {
+      if (head->left == NULL)
+      {
+        head->left = tmp;
+        tmp->right = head;
+        return tmp;
+      }
 
-  head->right->left = head;
-  head->right->right = NULL;
+      head = head->left;
+
+      if (step == stay || step == left)
+      {
+        step = left;
+      }
+      else
+      {
+        tmp->left = head;
+        tmp->right = head->right;
+        head->right = tmp;
+        tmp->right->left = tmp;
+        break;
+      }
+    }
+    else if (c > 0)
+    {
+      if (head->right == NULL)
+      {
+        head->right = tmp;
+        tmp->left = head;
+        break;
+      }
+      head = head->right;
+      step = right;
+    }
+    else
+    {
+      if (head->right == NULL)
+      {
+        head->right = tmp;
+        break;
+      }
+      else
+      {
+        tmp->left = head;
+        tmp->right = head->right;
+        head->right = tmp;
+        tmp->right->left = tmp;
+        break;
+      }
+    }
+  }
+  return Booklist;
 }
 
 booklist* deleteByID(booklist* Booklist, int id) {
@@ -129,6 +194,18 @@ booklist* findContact(booklist* Booklist, int id) {
   }
 
   return NULL;
+}
+
+int findContactByName(booklist* Booklist, char* FIO) {
+  booklist* head = Booklist;
+
+  while (head) {
+    if (strstr(head->Phonebook.FIO, FIO)) return head->Phonebook.id;
+
+    head = head->right;
+  }
+
+  return -1;
 }
 
 void freeContacts(booklist* Booklist) {

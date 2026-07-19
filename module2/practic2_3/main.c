@@ -3,9 +3,14 @@
 
 #include "calculator.h"
 
-int askAction() {
+int askAction(func_pair functions[]) {
   printf("==================================================\n");
-  printf("Выберите действие:\n1. sum\n2. sub\n3. div\n4. mul\n");
+  printf("Выберите действие:\n");
+
+  for (int i = 0; i < PAIR_LENGH ; i++)
+  {
+    printf("%d. %c\n", i + 1, functions[i].sign);
+  }
   printf("==================================================\n");
   int input = 0;
   scanf(" %d", &input);
@@ -13,41 +18,32 @@ int askAction() {
   return input;
 }
 
-void askOperand(int action) {
+void askOperand(int action, func_pair functions[]) {
   printf("Введите 2 операнда:\n");
   double a, b;
   scanf("%lf %lf", &a, &b);
 
   printf("Ответ: ");
-  switch (action) {
-    case 1:
-      printf("%.5lf\n", sum(a, b));
-      break;
-    case 2:
-      printf("%.5lf\n", sub(a, b));
-      break;
-    case 3:
-      printf("%.5lf\n", divide(a, b));
-      break;
-    case 4:
-      printf("%.5lf\n", mul(a, b));
-      break;
-  }
+  printf("%.5lf", functions[action - 1].func(a, b));
 }
 
 int main(void) {
   int action = -1;
   char ch;
 
+  func_pair functions[PAIR_LENGH];
+
+  init_pair(functions);
+
   system("clear");
 
   while (action != 0) {
     system("clear");
 
-    action = askAction();
+    action = askAction(functions);
 
-    if (action >= 1 && action <= 4) {
-      askOperand(action);
+    if (action >= 1 && action <= PAIR_LENGH) {
+      askOperand(action, functions);
     }
     scanf("%c", &ch);
     scanf("%c", &ch);

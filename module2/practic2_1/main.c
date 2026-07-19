@@ -57,6 +57,7 @@ int main(void) {
     printf("1. Добавить контакт\n");
     printf("2. Удалить контакт (выберите его ID)\n");
     printf("3. Изменить контакт (выберите ID)\n");
+    printf("4. Поиск контакта по имени\n");
     printf("0. Выход\n");
     printf("==================================================\n");
 
@@ -98,7 +99,7 @@ int main(void) {
       printf("==================================================\n");
 
       if (Booklist != NULL)
-        addContact(Booklist, FIO, email, number);
+        Booklist = addContact(Booklist, FIO, email, number);
       else
         Booklist = firstContact(FIO, email, number);
 
@@ -182,6 +183,25 @@ int main(void) {
       }
 
       printf("==================================================\n");
+    }
+    if (choice == 4)
+    {
+      char ch;
+      printf("Введите имя: ");
+      FIO = (char*)calloc(255, sizeof(char));
+      scanf("%s", FIO);
+      int id = findContactByName(Booklist, FIO);
+      if (id == -1)
+      {
+        printf("Такого контакта нет :(\n");
+      }
+      else
+      {
+        printf("ID контакта: %d", id);
+      }
+      free(FIO);
+      scanf("%c", &ch);
+      scanf("%c", &ch);
     }
     if (choice == 0) break;
   }
