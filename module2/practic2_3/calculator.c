@@ -1,7 +1,6 @@
 #include "calculator.h"
 
-void init_pair(func_pair functions[])
-{
+void init_pair(func_pair functions[]) {
   func_pair sum_f = {'+', sum};
 
   functions[0] = sum_f;

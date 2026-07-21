@@ -7,8 +7,7 @@ int askAction(func_pair functions[]) {
   printf("==================================================\n");
   printf("Выберите действие:\n");
 
-  for (int i = 0; i < PAIR_LENGH ; i++)
-  {
+  for (int i = 0; i < PAIR_LENGH; i++) {
     printf("%d. %s\n", i + 1, functions[i].name);
   }
   printf("==================================================\n");

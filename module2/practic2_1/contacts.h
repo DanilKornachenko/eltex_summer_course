@@ -18,8 +18,7 @@ typedef struct booklist {
   struct booklist* right;
 } booklist;
 
-typedef enum
-{
+typedef enum {
   stay,
   left,
   right,

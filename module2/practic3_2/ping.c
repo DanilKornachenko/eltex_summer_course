@@ -44,7 +44,7 @@ ip_addr parse_ip(char* str_gateway) {
 }
 
 int check_mask(ip_addr src, ip_addr desc, ip_addr mask) {
-  if ((src & mask) == (desc & mask)) return 1;
+  if (!((src & mask) ^ (desc & mask))) return 1;
 
   return 0;
 }

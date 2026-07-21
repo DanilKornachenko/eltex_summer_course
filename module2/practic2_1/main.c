@@ -184,19 +184,15 @@ int main(void) {
 
       printf("==================================================\n");
     }
-    if (choice == 4)
-    {
+    if (choice == 4) {
       char ch;
       printf("Введите имя: ");
       FIO = (char*)calloc(255, sizeof(char));
       scanf("%s", FIO);
       int id = findContactByName(Booklist, FIO);
-      if (id == -1)
-      {
+      if (id == -1) {
         printf("Такого контакта нет :(\n");
-      }
-      else
-      {
+      } else {
         printf("ID контакта: %d", id);
       }
       free(FIO);

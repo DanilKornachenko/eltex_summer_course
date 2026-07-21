@@ -3,8 +3,7 @@
 
 #define PAIR_LENGH 4
 
-typedef struct func_pair
-{
+typedef struct func_pair {
   char* name;
   double (*func)(double, double);
   void* handle;

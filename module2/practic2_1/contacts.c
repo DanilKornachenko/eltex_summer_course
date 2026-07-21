@@ -32,10 +32,7 @@ static phonebook createUser(int id, char* FIO, char* email, char* number) {
   return user;
 }
 
-static int cmpName(char* main, char* other)
-{
-  return strcmp(main, other);
-}
+static int cmpName(char* main, char* other) { return strcmp(main, other); }
 
 booklist* firstContact(char* FIO, char* email, char* number) {
   phonebook user = createUser(1, FIO, email, number);
@@ -59,8 +56,7 @@ booklist* addContact(booklist* Booklist, char* FIO, char* email, char* number) {
   tmp->right = NULL;
   tmp->Phonebook = createUser(id, FIO, email, number);
 
-  if (Booklist == NULL)
-  {
+  if (Booklist == NULL) {
     return tmp;
   }
 
@@ -71,10 +67,8 @@ booklist* addContact(booklist* Booklist, char* FIO, char* email, char* number) {
   while (1) {
     int c = cmpName(FIO, head->Phonebook.FIO);
 
-    if (c < 0)
-    {
-      if (head->left == NULL)
-      {
+    if (c < 0) {
+      if (head->left == NULL) {
         head->left = tmp;
         tmp->right = head;
         return tmp;
@@ -82,39 +76,28 @@ booklist* addContact(booklist* Booklist, char* FIO, char* email, char* number) {
 
       head = head->left;
 
-      if (step == stay || step == left)
-      {
+      if (step == stay || step == left) {
         step = left;
-      }
-      else
-      {
+      } else {
         tmp->left = head;
         tmp->right = head->right;
         head->right = tmp;
         tmp->right->left = tmp;
         break;
       }
-    }
-    else if (c > 0)
-    {
-      if (head->right == NULL)
-      {
+    } else if (c > 0) {
+      if (head->right == NULL) {
         head->right = tmp;
         tmp->left = head;
         break;
       }
       head = head->right;
       step = right;
-    }
-    else
-    {
-      if (head->right == NULL)
-      {
+    } else {
+      if (head->right == NULL) {
         head->right = tmp;
         break;
-      }
-      else
-      {
+      } else {
         tmp->left = head;
         tmp->right = head->right;
         head->right = tmp;
