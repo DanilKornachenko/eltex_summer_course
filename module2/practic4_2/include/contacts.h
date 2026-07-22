@@ -27,11 +27,11 @@ typedef enum {
 void push_equal(booklist** queue, short priority, char* FIO, char* email,
                 char* number);
 
-int pop_equal(booklist** queue, short priority);
+booklist* pop_equal(booklist** queue, short priority);
 
-int pop_first(booklist** queue);
+booklist* pop_first(booklist** queue);
 
-int pop_greater(booklist** queue, short priority);
+booklist* pop_greater(booklist** queue, short priority);
 
 void freeContacts(booklist* Booklist);
 

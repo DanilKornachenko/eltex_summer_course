@@ -239,69 +239,77 @@ void push_equal(booklist** queue, short priority, char* FIO, char* email,
   current->right = elem;
 }
 
-int pop_equal(booklist** queue, short priority) {
+booklist* pop_equal(booklist** queue, short priority) {
   booklist* elem = *queue;
   booklist* prev = NULL;
 
   while (elem) {
     if (elem->priority == priority) {
       booklist* next = elem->right;
-
+      /*
       free(elem->Phonebook.Data.email);
       free(elem->Phonebook.Data.number);
       free(elem->Phonebook.FIO);
-
+      */
+      booklist* poped = elem;
       if (prev == NULL) {
         *queue = next;
-        free(elem);
+        // free(elem);
         elem = next;
       } else {
         prev->right = next;
-        free(elem);
+        // free(elem);
         elem = next;
       }
-      return 1;
+      poped->right = NULL;
+      return poped;
     } else {
       prev = elem;
       elem = elem->right;
     }
   }
-  return 0;
+  return NULL;
 }
 
-int pop_first(booklist** queue) {
-  if (*queue == NULL) return 0;
+booklist* pop_first(booklist** queue) {
+  if (*queue == NULL) return NULL;
   booklist* head = *queue;
   *queue = head->right;
+  /*
   free(head->Phonebook.Data.email);
   free(head->Phonebook.Data.number);
   free(head->Phonebook.FIO);
   free(head);
-  return 1;
+  */
+  head->right = NULL;
+  return head;
 }
 
-int pop_greater(booklist** queue, short priority) {
+booklist* pop_greater(booklist** queue, short priority) {
   booklist* current = *queue;
   booklist* prev = NULL;
   while (current) {
     if (current->priority >= priority) {
       booklist* next = current->right;
+      /*
       free(current->Phonebook.Data.email);
       free(current->Phonebook.Data.number);
       free(current->Phonebook.FIO);
+      */
       if (prev == NULL) {
         *queue = next;
       } else {
         prev->right = next;
       }
-      free(current);
-      return 1;
+      current->right = NULL;
+      // free(current);
+      return current;
     } else {
       prev = current;
       current = current->right;
     }
   }
-  return 0;
+  return NULL;
 }
 
 void freeContacts(booklist* Booklist) {
