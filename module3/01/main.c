@@ -85,6 +85,9 @@ int main(int argc, char** argv)
     }
   }
 
+  int fds[4] = {0};
+  make_pipe(pipepath, fds);
+
   pid_t pid = fork();
 
   if (pid < 0)
@@ -93,9 +96,6 @@ int main(int argc, char** argv)
     // TODO: Нужно ли что-то отчищать?
     exit(1);
   }
-
-  int fds[4] = {0};
-  make_pipe(pipepath, fds);
 
   if (pid > 0)
   {
@@ -118,6 +118,7 @@ int main(int argc, char** argv)
         while (read(file, message, 100))
         {
           write(fds[1], message, 100);
+          write(fds[3], "continue", 9);
         }
         close(file);
         write(fds[3], "close", 6);
@@ -129,6 +130,7 @@ int main(int argc, char** argv)
   }
   else
   {
+    // TODO: Переработать обработку read, так как read ждёт сообщения до талого
     // TODO: Принимать запись в файл из pipe
     int file;
     bool fileopen = false;
@@ -160,7 +162,12 @@ int main(int argc, char** argv)
       if (fileopen)
       {
         //TODO: loop write into file descriptor
-
+        char message[100] = {0};
+        size_t n = 0;
+        while ((n = read(file, message, 100)))
+        {
+          write(file, message, n);
+        }
       }
     }
   }
