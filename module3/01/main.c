@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdbool.h>
+#include <fcntl.h>
+#include <sys/wait.h>
 
 void make_pipe(char* pipe_name, int* fildes)
 {
@@ -87,28 +90,79 @@ int main(int argc, char** argv)
   if (pid < 0)
   {
     perror("Ошибка при создании форка! ");
+    // TODO: Нужно ли что-то отчищать?
+    exit(1);
   }
 
   int fds[4] = {0};
   make_pipe(pipepath, fds);
 
-  if (pid == 0)
+  if (pid > 0)
   {
-    char message[100] = {0};
-    do
+    int file;
+    for (int i = 0; i < strs_size; i++)
     {
-      if (read(fds[2], message, 100) != 0)
+      file = open(strs[i], O_RDONLY, 0222);
+      if (file == -1)
       {
-        if (strstr(message, "FILE:") != NULL)
-        {
-          // TODO: Сделать чтение и запись файлов форками
-        }
+        perror("file not enable : ");
+        continue;
       }
-    } while (strstr(message, "end") == NULL)
+      else
+      {
+        char filepath[100] = {0};
+        strcpy(filepath, "FILE:");
+        strcat(filepath, strs[i]);
+        write(fds[3], filepath, strlen(filepath));
+        char* message[100] = {0};
+        while (read(file, message, 100))
+        {
+          write(fds[1], message, 100);
+        }
+        close(file);
+        write(fds[3], "close", 6);
+      }
+    }
+    write(fds[3], "END", 4);
+    int status;
+    wait(&status);
   }
   else
   {
+    // TODO: Принимать запись в файл из pipe
+    int file;
+    bool fileopen = false;
+    char message[100] = {0};
+    while(true)
+    {
+      if (read(fds[2], message, 100))
+      {
+        if (strstr(message, "FILE:"))
+        {
+          //TODO: create file
+          char filepath[100];
+          strcpy(filepath, strstr(message, "FILE:"));
+          strcat(filepath, ".copy");
+          file = open(filepath, O_CREAT | O_APPEND, 0444);
+          fileopen = true;
+        } else if (strstr(message, "close"))
+        {
+          // TODO: close file
+          close(file);
+          fileopen = false;
+        }
+        else if (strstr(message, "END"))
+        {
+          //TODO: End program
+          exit(0);
+        }
+      }
+      if (fileopen)
+      {
+        //TODO: loop write into file descriptor
 
+      }
+    }
   }
 
   for (int i = 0; i < strs_size; i++)
