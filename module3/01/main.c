@@ -6,6 +6,8 @@
 #include <stdbool.h>
 #include <fcntl.h>
 #include <sys/wait.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 void make_pipe(char* pipe_name, int* fildes)
 {
@@ -27,7 +29,18 @@ void make_pipe(char* pipe_name, int* fildes)
     }
     else
     {
-
+      if (mkfifo(pipe_name, 0777) == 0)
+      {
+        struct stat st;
+        stat(pipe_name, &st);
+        // TODO: how take fd D:
+       fildes[0] = open(pipe_name, O_RDWR, 0666);
+       fildes[1] = open(pipe_name, O_RDWR, 0666);
+      }
+      else
+      {
+        perror("FIFO error : ");
+      }
     }
     if (pipe(fd2) == 0)
     {
@@ -210,62 +223,17 @@ int main(int argc, char** argv)
           write(file, message, last);
         }
       }
-      /*
-      if (read(fds[2], message, 100))
-      {
-        if (strstr(message, "FILE:"))
-        {
-          //TODO: create file
-          char filepath[100];
-          strcpy(filepath, strstr(message, "FILE:"));
-          strcat(filepath, ".copy");
-          char filepath2[100] = {0};
-          char* p = filepath + 5;
-          for (int i = 0; *p != '\0';p++, i++)
-          {
-            filepath2[i] = *p;
-          }
-          file = open(filepath2, O_RDWR | O_CREAT, 0666);
-          fileopen = true;
-        } else if (strstr(message, "close"))
-        {
-          // TODO: close file
-          close(file);
-          fileopen = false;
-        }
-        else if (strstr(message, "END"))
-        {
-          //TODO: End program
-          exit(0);
-        }
-      }
-      if (fileopen)
-      {
-        //TODO: loop write into file descriptor
-        char message[100] = {0};
-        size_t n = 0;
-        while ((n = read(fds[0], message, 100)))
-        {
-          write(file, message, n);
-          read(fds[2], message, 100);
-          if (strstr(message, "close") != NULL)
-          {
-            close(file);
-            fileopen = false;
-            break;
-          }
-        }
-      }
-      */
     }
   }
 
+  /*
   for (int i = 0; i < strs_size; i++)
   {
     printf("FILE: %s\n", strs[i]);
   }
   if (pipepath[0] != '\0')
     printf("PIPE: %s\n", pipepath);
+  */
 
   return 0;
 }
