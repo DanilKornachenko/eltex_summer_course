@@ -17,5 +17,6 @@ check:
 
 check2:
 	@./main test_files/hello.txt test_files/how_are_you.log
+	@./main main
 	diff test_files/hello.txt test_files/hello.txt.copy
 	diff test_files/how_are_you.log test_files/how_are_you.log.copy
