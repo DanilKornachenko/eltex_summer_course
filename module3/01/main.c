@@ -97,12 +97,12 @@ int main(int argc, char** argv)
     exit(1);
   }
 
-  if (pid > 0)
+  if (pid == 0)
   {
     int file;
     for (int i = 0; i < strs_size; i++)
     {
-      file = open(strs[i], O_RDONLY, 0222);
+      file = open(strs[i], O_RDONLY);
       if (file == -1)
       {
         perror("file not enable : ");
@@ -113,18 +113,28 @@ int main(int argc, char** argv)
         char filepath[100] = {0};
         strcpy(filepath, "FILE:");
         strcat(filepath, strs[i]);
+        strcat(filepath, "|");
         write(fds[3], filepath, strlen(filepath));
-        char* message[100] = {0};
-        while (read(file, message, 100))
+        sleep(1);
+        char message[100] = {0};
+        strcpy(message, "MSGE:");
+        size_t n = 0;
+        while ((n = read(file, message + 5, 94)))
         {
-          write(fds[1], message, 100);
-          write(fds[3], "continue", 9);
+          strcat(message, "|");
+          write(fds[1], message, n + 6);
+        sleep(1);
+          //write(fds[3], "ACTN:continue|", 14);
+        sleep(1);
         }
         close(file);
-        write(fds[3], "close", 6);
+        sleep(1);
+        write(fds[3], "ACTN:close|", 11);
+        sleep(1);
       }
     }
-    write(fds[3], "END", 4);
+    write(fds[3], "ACTN:END|", 9);
+        sleep(1);
     int status;
     wait(&status);
   }
@@ -135,8 +145,72 @@ int main(int argc, char** argv)
     int file;
     bool fileopen = false;
     char message[100] = {0};
+    char ch[1] = {0};
     while(true)
     {
+      read(fds[2], message, 5);
+      if (strstr(message, "FILE:"))
+      {
+        if (!fileopen)
+        {
+          int last = 0;
+          *ch = '\0';
+          for (int i = 0; *ch != '|'; i++)
+          {
+            read(fds[2], ch, 1);
+            message[i] = *ch;
+            last = i;
+          }
+          message[last] = '\0';
+          strcat(message, ".copy");
+          file = open(message, O_CREAT | O_RDWR, 0666);
+          fileopen = true;
+        }
+      }
+      if (strstr(message, "ACTN:"))
+      {
+        *ch = '\0';
+        int last = 0;
+        for (int i = 0; *ch != '|'; i++)
+        {
+          read(fds[2], ch, 1);
+          message[i] = *ch;
+          last = i;
+        }
+        message[last] = '\0';
+        if (strstr(message, "close"))
+        {
+          if (fileopen)
+          {
+            fileopen = false;
+            close(file);
+          }
+        }
+        if (strstr(message, "END"))
+        {
+          // TODO: maybe clean memory
+          exit(0);
+        }
+      }
+      if (fileopen)
+      {
+        read(fds[0], message, 5);
+
+        if (strstr(message, "MSGE:"))
+        {
+          *ch = '\0';
+          int last = 0;
+          for (int i = 0; *ch != '|'; i++)
+          {
+            read(fds[0], ch, 1);
+            message[i] = *ch;
+            last = i;
+          }
+          message[last] = '\0';
+          write(file, message, last);
+        }
+      }
+      /*
       if (read(fds[2], message, 100))
       {
         if (strstr(message, "FILE:"))
@@ -145,7 +219,13 @@ int main(int argc, char** argv)
           char filepath[100];
           strcpy(filepath, strstr(message, "FILE:"));
           strcat(filepath, ".copy");
-          file = open(filepath, O_CREAT | O_APPEND, 0444);
+          char filepath2[100] = {0};
+          char* p = filepath + 5;
+          for (int i = 0; *p != '\0';p++, i++)
+          {
+            filepath2[i] = *p;
+          }
+          file = open(filepath2, O_RDWR | O_CREAT, 0666);
           fileopen = true;
         } else if (strstr(message, "close"))
         {
@@ -164,11 +244,19 @@ int main(int argc, char** argv)
         //TODO: loop write into file descriptor
         char message[100] = {0};
         size_t n = 0;
-        while ((n = read(file, message, 100)))
+        while ((n = read(fds[0], message, 100)))
         {
           write(file, message, n);
+          read(fds[2], message, 100);
+          if (strstr(message, "close") != NULL)
+          {
+            close(file);
+            fileopen = false;
+            break;
+          }
         }
       }
+      */
     }
   }
 
