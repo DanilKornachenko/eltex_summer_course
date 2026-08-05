@@ -22,16 +22,8 @@ typedef struct saved_message {
   char* message;
 } sm;
 
-void* search_pid(void* strcts, size_t size, int capacity, int pid);
-
-void parse_pubs(int result, message msg);
-
-void parse_subs(int result, message msg);
-
-void process_message(int result, message msg);
-
-void send_all();
-
 void broker_mainloop();
+
+void cleanup_broker();
 
 #endif
