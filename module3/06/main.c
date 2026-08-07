@@ -6,6 +6,48 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <signal.h>
+
+pthread_mutex_t stdout_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+char user[50] = {0};
+
+int global_sock = -1;
+struct sockaddr_in global_dest_sockaddr = {0};
+
+void* recv_thread(void* arg) {
+  int sockfd = *(int*)arg;
+  char mess[100] = {0};
+  struct sockaddr_in dest_addr;
+  socklen_t dest_len = sizeof(dest_addr);
+
+  while (1) {
+    int n = recvfrom(sockfd, mess, sizeof(mess), 0,
+                     (struct sockaddr*)&dest_addr, &dest_len);
+
+    if (n == -1) {
+      perror("recvfrom ");
+    } else if (n != 0) {
+      mess[n] = '\0';
+      pthread_mutex_lock(&stdout_mutex);
+      if (!(strncmp(mess, user, strlen(user)) == 0)) {
+        fwrite(mess, 1, n, stdout);
+        putc('\n', stdout);
+        fflush(stdout);
+      }
+      pthread_mutex_unlock(&stdout_mutex);
+    }
+  }
+  return NULL;
+}
+
+static void kind_exit(int sig)
+{
+  char send_msg[100];
+  snprintf(send_msg, 100, "%s:Disconnected", user);
+  sendto(global_sock, send_msg, strlen(send_msg), 0, (struct sockaddr*)&global_dest_sockaddr, sizeof(global_dest_sockaddr));
+  exit(0);
+}
 
 int main(void) {
   int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
@@ -44,8 +86,10 @@ int main(void) {
   }
 
   char mess[100] = {0};
+  char send_msg[100] = {0};
+  snprintf(user, 50, "user%d", getpid());
 
-  snprintf(mess, 100, "[CON]:user%d", getpid());
+  snprintf(mess, 100, "[CON]:%s", user);
 
   int s = sendto(sockfd, mess, strlen(mess), 0, (struct sockaddr*)&dest_addr,
                  sizeof(dest_addr));
@@ -54,25 +98,24 @@ int main(void) {
     perror("first bind ");
   }
 
+  pthread_t tid;
+  pthread_create(&tid, NULL, recv_thread, &sockfd);
+
+  global_sock = sockfd;
+  global_dest_sockaddr = dest_addr;
+
+  signal(SIGINT, kind_exit);
+
   while (1) {
     fgets(mess, sizeof(mess), stdin);
     mess[strcspn(mess, "\n")] = '\0';
     if (!(strlen(mess) == 0)) {
-      int send_len = sendto(sockfd, mess, strlen(mess), 0,
+      snprintf(send_msg, 100, "%s:%s", user, mess);
+      int send_len = sendto(sockfd, send_msg, strlen(send_msg), 0,
                             (struct sockaddr*)&dest_addr, dest_len);
       if (send_len == -1) {
         perror("loop send ");
       }
-    }
-
-    int n = recvfrom(sockfd, mess, sizeof(mess), 0,
-                     (struct sockaddr*)&dest_addr, &dest_len);
-
-    if (n == -1) {
-      perror("recvfrom ");
-    } else if (n != 0) {
-      fwrite(mess, 1, n, stdout);
-      putc('\n', stdout);
     }
   }
 
