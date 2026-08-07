@@ -154,6 +154,7 @@ void consumer_loop()
       current_offset = next_offset;
 
     } else if (len == 0 && next_offset == 0) {
+      semop(sem, &unlock, 1);
       break;
     } else {
       current_offset = next_offset;
