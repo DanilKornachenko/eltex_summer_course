@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <unistd.h>
 
 #define BUFFER_SIZE 65512
 
@@ -52,24 +53,22 @@ int main(void) {
 
     struct udphdr* udphdr = (struct udphdr*)(buffer + ip_size);
 
-    uint16_t source = htons(udphdr->source);
-    uint16_t dest = htons(udphdr->dest);
-    uint16_t dport = htons(udphdr->uh_dport);
-    uint16_t sport = htons(udphdr->uh_sport);
+    uint16_t src_port = ntohs(udphdr->source);
+    uint16_t dest_port = ntohs(udphdr->dest);
 
-    char source_ip[7] = {0};
-    char dest_ip[7] = {0};
+    char src_ip[INET_ADDRSTRLEN], dest_ip[INET_ADDRSTRLEN];
 
-    inet_ntop(AF_INET, &source, source_ip, INET_ADDRSTRLEN);
-    inet_ntop(AF_INET, &dest, dest_ip, INET_ADDRSTRLEN);
+    inet_ntop(AF_INET, &iphdr->saddr, src_ip, INET_ADDRSTRLEN);
+    inet_ntop(AF_INET, &iphdr->daddr, dest_ip, INET_ADDRSTRLEN);
 
-    source_ip[6] = '\0';
-    dest_ip[6] = '\0';
+    char* data = buffer + sizeof(struct udphdr) + ip_size;
+    int data_len = n - ip_size - sizeof(struct udphdr);
 
-    printf("Source:\t%s:%u\nDest:\t%s:%u\n",source_ip, sport, dest_ip, dport);
+    printf("Source:\t%s:%u\nDest:\t%s:%u\nData: %s\nData Length: %d", src_ip, src_port, dest_ip, dest_port, data, data_len);
 
   }
 
+  close(sockfd);
 
   return 0;
 }
