@@ -63,7 +63,7 @@ static int del_client(client_t client) {
 
 static void send_client(client_t client, char* message, int size) {
   if (size >= 5) {
-    if (strncmp(message, "EXIT", 5) == 0) {
+    if (strncmp(message, "EXIT", 4) == 0) {
       int res = del_client(client);
       if (res) {
         printf("Client exit\n");

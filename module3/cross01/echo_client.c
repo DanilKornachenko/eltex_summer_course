@@ -61,11 +61,9 @@ int main(void) {
     size_t bufsize = 0;
     ssize_t length = getline(&message, &bufsize, stdin);
     if (length == -1) {
-      // ошибка или EOF
       free(message);
       break;
     }
-    // len включает '\n', если он есть
     if (length > 0 && message[length - 1] == '\n') {
       message[length - 1] = '\0';
       length--;
@@ -97,7 +95,7 @@ int main(void) {
     struct udphdr* recvudp = NULL;
     int ip_size = 0;
     int n = -1;
-    while (src_port != 5000 && dest_port != client_port) {
+    while (!(src_port == 5000 && dest_port == client_port)) {
       n = recvfrom(sockfd, buffer, 1024, 0, (struct sockaddr*)&addr, &len);
 
       if (n == -1) {
@@ -130,7 +128,6 @@ int main(void) {
 
     printf("response: %.*s\n", data_len, recvdata);
     free(message);
-    client_port = -1;
     src_port = -1;
   }
 
