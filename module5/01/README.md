@@ -1,8 +1,8 @@
 # 1. Установка linux_headers  
-[report/install_headers.png](linux_headers)  
+![linux_headers](report/install_headers.png)  
 # 2. Компиляция (Makefile и mymodule.c находятся в дериктории)  
-[report/make.png](make)  
+![make](report/make.png)  
 # 3. Вывод модуля  
-[report/outputmod.png](outputmod)  
+![outputmod](report/outputmod.png)  
 # 4. modinfo :D  
-[report/modinfo.png](modinfo)  
+![modinfo](report/modinfo.png)  
