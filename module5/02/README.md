@@ -1,5 +1,5 @@
 # 1. Билд модуля  
-![report/modinfo.png](modinfo.png)  
+![modinfo.png](report/modinfo.png)  
 # 2. Запуск и проверка  
-![report/insmod.png](insmod.png)  
-![report/rmmod.png](rmmod.png)  
+![insmod.png](report/insmod.png)  
+![rmmod.png](report/rmmod.png)  
